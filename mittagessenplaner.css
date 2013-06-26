@@ -1,20 +1,74 @@
 /* CSS declarations go here */
 
-input[name=freeSeats] { width: 20px; }
-input[name=time] { width: 40px; }
-select[name=movement] { width: 80px; }
+input[name=freeSeats] {
+    width: 20px;
+}
 
-.invisible { display:none; }
-.delete, .removejoiner { cursor:pointer; color:red }
+input[name=time] {
+    width: 40px;
+}
 
-.destination { padding: 30px 0; }
+select[name=movement] {
+    width: 80px;
+}
 
-.login { padding-top: 200px; }
+.invisible {
+    display: none;
+}
 
-body { text-align:center; }
+.delete, .removejoiner {
+    cursor: pointer;
+    color: #ff0000;
+}
 
-ul { list-style-type: none; }
+.destination {
+    padding: 20px 0;
+    border: 1px solid rgba(15, 15, 15, 0.36);
+    margin: 10px auto;
+    width: 40%;
 
-select, input[type=text] { position:relative; top:4px; }
+    box-shadow: 0px 0px 3px #888;
 
-.addLocation {text-decoration: underline; cursor: pointer;}
+}
+
+
+.destination:first-child {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+.destination:last-child {
+
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+.destList {
+    padding: 20px;
+    text-align: center;
+}
+
+.clear {
+    clear: both;
+}
+
+.login {
+    padding-top: 200px;
+}
+
+body {
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+}
+
+select, input[type=text] {
+    position: relative;
+    top: 4px;
+}
+
+.addLocation {
+    text-decoration: underline;
+    cursor: pointer;
+}

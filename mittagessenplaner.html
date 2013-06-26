@@ -22,7 +22,7 @@
 </template>
 
 <template name="enter">
-
+    {{#if isFree}}
     Ich
     <select name="movement">
         <option value="läuft">laufe</option>
@@ -38,14 +38,16 @@
     </select>
     <span id="seats" class="invisible">und habe <input type="text" value="3" name="freeSeats"/> Sitze frei</span>
     <input type="button" value="Eintragen"/>
+    {{/if}}
 </template>
 
 <template name="list">
-    <div>
+    <div class="destList">
         {{#each destinations}}
         {{> destination}}
         {{/each}}
     </div>
+    <div class="clear"></div>
 </template>
 
 <template name="destination">
@@ -54,17 +56,19 @@
             {{name}} {{movement}} um {{time}} Uhr zum {{dest}}
 
             {{#if movementIs "fährt"}}
-            und hat {{freeSeats}} Sitze frei
+            und hat noch {{freeSeats}} Sitze frei
             {{/if}}
+            {{#if isOwner userId}}
             <span class="delete" id="{{_id}}">x</span>
+            {{/if}}
         </div>
         {{#if hasJoiners}}
         Mit dabei sind:
         <ul>
             {{#each joiners}}
-            <li>{{this}}
+            <li>{{name}}
                 {{#if isJoiner this}}
-                <span class="removejoiner" name="{{this}}" itemId="{{../../_id}}">x</span></li>
+                <span class="removejoiner" userId="{{userId}}" itemId="{{../../_id}}">x</span></li>
             {{/if}}
             {{/each}}
         </ul>

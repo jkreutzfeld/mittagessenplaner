@@ -11,7 +11,7 @@ objSize = function (obj) {
 if (Meteor.isClient) {
 
     Template.main.isLoggedIn = function () {
-        return Cookie.get("loggedInName") !== null;
+        return Cookie.get("userId") !== null;
     };
 
     Template.main.events({
@@ -19,6 +19,7 @@ if (Meteor.isClient) {
             var value = template.find('input[name=user]').value;
             if (value !== undefined && event.which === 13) {
                 Cookie.set("loggedInName", value, {years: 1});
+                Cookie.set("userId", new Meteor.Collection.ObjectID()._str, {years: 1});
             }
         }
     });
@@ -32,12 +33,13 @@ if (Meteor.isClient) {
             var movement = template.find('select[name=movement]').value;
             var dest = template.find('select[name=addDest]').value;
             var seats = template.find('input[name=freeSeats]').value;
-            if (movement == 'fährt') {
+            if (movement == 'läuft') {
                 seats = -1;
             }
             var time = template.find('input[name=time]').value;
+            var userId = Cookie.get("userId");
 
-            Destinations.insert({name: Cookie.get("loggedInName"), movement: movement, dest: dest, seats: seats, joiners: [], time: time});
+            Destinations.insert({name: Cookie.get("loggedInName"), userId: userId, movement: movement, dest: dest, seats: seats, joiners: [], time: time});
         },
         'change select[name=movement]': function (event, template) {
             if (event.target.value == 'fährt') {
@@ -89,16 +91,15 @@ if (Meteor.isClient) {
             var entry = Destinations.findOne(id);
             joiners = entry.joiners;
             joiners = jQuery.grep(joiners, function (value) {
-                return value != event.target.getAttribute('name');
+                return value.userId != event.target.getAttribute('userId');
             });
             Destinations.update(id, {$set: {joiners: joiners}});
-            Session.set("joined", false)
         },
         'click input[type=button]': function (event, template) {
             var id = event.target.name;
             var name = Cookie.get("loggedInName");
-            Destinations.update(id, {$push: {joiners: name}});
-            Session.set("joined", true);
+            var userId = Cookie.get("userId");
+            Destinations.update(id, {$push: {joiners: {name: name, userId: userId}}});
         }
     });
 
@@ -110,7 +111,7 @@ if (Meteor.isClient) {
     };
 
     Template.destination.isJoiner = function (joiner) {
-        return joiner == Cookie.get("loggedInName");
+        return joiner.userId == Cookie.get("userId");
     };
     Template.destination.joinerMovementType = function () {
         return (this.movement == 'fährt') ? 'fahren' : 'kommen';
@@ -119,10 +120,35 @@ if (Meteor.isClient) {
         return this.seats - this.joiners.length;
     };
 
+    Template.destination.isOwner = function(id) {
+        return id == Cookie.get("userId");
+    }
     Template.destination.hasSpaceLeftAndCanJoin = function () {
-        return (this.seats == -1 || (this.seats - this.joiners.length)) > 0 && Session.get("joined") != true;
+        return (this.seats == -1 || (this.seats - this.joiners.length)) > 0 && !hasJoinedYet();
     };
 
+    Template.enter.isFree = function() {
+        return !hasJoinedYet();
+    }
+
+    function hasJoinedYet() {
+        var hasJoined = false;
+        var userId = Cookie.get("userId");
+        Destinations.find().forEach(function (row) {
+            if (row.userId == userId) {
+                hasJoined = true;
+                return;
+            }
+            var joiners = row.joiners;
+            for (var joiner in joiners) {
+                if (joiners[joiner].userId == userId) {
+                    hasJoined = true;
+                    return;
+                }
+            }
+        });
+        return hasJoined;
+    }
 
     Template.locations.formatlink = function (link) {
         return (link.match("^http://") ? link : "http://" + link);

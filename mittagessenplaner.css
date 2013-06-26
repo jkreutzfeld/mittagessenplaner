@@ -1,0 +1,20 @@
+/* CSS declarations go here */
+
+input[name=freeSeats] { width: 20px; }
+input[name=time] { width: 40px; }
+select[name=movement] { width: 80px; }
+
+.invisible { display:none; }
+.delete, .removejoiner { cursor:pointer; color:red }
+
+.destination { padding: 30px 0; }
+
+.login { padding-top: 200px; }
+
+body { text-align:center; }
+
+ul { list-style-type: none; }
+
+select, input[type=text] { position:relative; top:4px; }
+
+.addLocation {text-decoration: underline; cursor: pointer;}

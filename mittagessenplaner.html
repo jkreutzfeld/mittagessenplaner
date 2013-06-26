@@ -1,0 +1,92 @@
+<head>
+    <title>mittagessenplaner</title>
+</head>
+
+<body>
+{{> main}}
+</body>
+
+<template name="main">
+    {{#if isLoggedIn}}
+    <h1>Wo soll's denn heute hingehen, {{currentUser}}?</h1>
+    {{> list}}
+    {{> enter}}
+    <hr/>
+    {{> locations}}
+    {{else}}
+    <div class="login">
+        <h1>Wie heißt du?</h1>
+        <input type="text" name="user"/>
+    </div>
+    {{/if}}
+</template>
+
+<template name="enter">
+
+    Ich
+    <select name="movement">
+        <option value="läuft">laufe</option>
+        <option value="fährt">fahre</option>
+    </select>
+    um
+    <input type="text" name="time" value="11:30"/>
+    Uhr zum
+    <select name="addDest">
+        {{#each foodtemples}}
+        <option>{{name}}</option>
+        {{/each}}
+    </select>
+    <span id="seats" class="invisible">und habe <input type="text" value="3" name="freeSeats"/> Sitze frei</span>
+    <input type="button" value="Eintragen"/>
+</template>
+
+<template name="list">
+    <div>
+        {{#each destinations}}
+        {{> destination}}
+        {{/each}}
+    </div>
+</template>
+
+<template name="destination">
+    <div class="destination">
+        <div>
+            {{name}} {{movement}} um {{time}} Uhr zum {{dest}}
+
+            {{#if movementIs "fährt"}}
+            und hat {{freeSeats}} Sitze frei
+            {{/if}}
+            <span class="delete" id="{{_id}}">x</span>
+        </div>
+        {{#if hasJoiners}}
+        Mit dabei sind:
+        <ul>
+            {{#each joiners}}
+            <li>{{this}}
+                {{#if isJoiner this}}
+                <span class="removejoiner" name="{{this}}" itemId="{{../../_id}}">x</span></li>
+            {{/if}}
+            {{/each}}
+        </ul>
+        {{/if}}
+        {{#if hasSpaceLeftAndCanJoin}}
+        <input type="button" name="{{_id}}" value="Ich will mit!"/>
+        {{/if}}
+    </div>
+</template>
+
+<template name="locations">
+    <span class="addLocation">Neue Location hinzufügen</span>
+
+    <div class="locations invisible">
+        Name: <input type="text" name="location"/> <br/>
+        Link zur Speisekarte / Homepage: <input type="text" name="link"/> <br/>
+        <input type="button" value="Eintragen"/>
+        <br/><br/>
+        <ul>
+            {{#each foodtemples}}
+            <li><a href="{{formatlink link}}">{{name}}</a> <span class="delete" id="{{_id}}">x</span></li>
+            {{/each}}
+        </ul>
+    </div>
+</template>

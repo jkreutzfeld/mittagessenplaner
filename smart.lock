@@ -1,0 +1,21 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "cookies": {},
+      "cron": {}
+    },
+    "packages": {
+      "cookies": {
+        "git": "https://github.com/subhog/meteor-cookies.git",
+        "tag": "v0.1.0",
+        "commit": "4f166bfc7048cf7744b581496dff1defd22ea867"
+      },
+      "cron": {
+        "git": "https://github.com/alexsuslov/Meteor.cron.git",
+        "tag": "v0.0.1",
+        "commit": "5216d14472fee7b692e8371aadc9f35f54ba9bb0"
+      }
+    }
+  }
+}

@@ -38,8 +38,11 @@ if (Meteor.isClient) {
             }
             var time = template.find('input[name=time]').value;
             var userId = Cookie.get("userId");
+            var comment = template.find('input[name=comment]');
 
-            Destinations.insert({name: Cookie.get("loggedInName"), userId: userId, movement: movement, dest: dest, seats: seats, joiners: [], time: time});
+
+            Destinations.insert({name: Cookie.get("loggedInName"), userId: userId, comment: comment.value, movement: movement, dest: dest, seats: seats, joiners: [], time: time});
+            comment.value = '';
         },
         'change select[name=movement]': function (event, template) {
             if (event.target.value == 'fährt') {
@@ -97,9 +100,11 @@ if (Meteor.isClient) {
         },
         'click input[type=button]': function (event, template) {
             var id = event.target.name;
+            var comment = template.find('input[name=comment]').value;
+            template.find('input[name=comment]').value = "";
             var name = Cookie.get("loggedInName");
             var userId = Cookie.get("userId");
-            Destinations.update(id, {$push: {joiners: {name: name, userId: userId}}});
+            Destinations.update(id, {$push: {joiners: {name: name, userId: userId, comment: comment}}});
         }
     });
 
@@ -112,6 +117,17 @@ if (Meteor.isClient) {
 
     Template.destination.isJoiner = function (joiner) {
         return joiner.userId == Cookie.get("userId");
+    };
+    Template.destination.isNotEmpty = function(text) {
+        return typeof text !== 'undefined' && text.length > 0;
+    };
+    Template.destination.hasLink = function() {
+        var dest = this.dest;
+        var ft = Foodtemples.findOne({name: dest});
+        return (ft.link.length > 0);
+    };
+    Template.destination.getLink = function(foodtemple) {
+        return Foodtemples.findOne({name: foodtemple}).link;
     };
     Template.destination.joinerMovementType = function () {
         return (this.movement == 'fährt') ? 'fahren' : 'kommen';

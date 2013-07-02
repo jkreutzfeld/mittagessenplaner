@@ -38,6 +38,8 @@
     </select>
     <span id="seats" class="invisible">und habe <input type="text" value="3" name="freeSeats"/> Sitze frei</span>
     <input type="button" value="Eintragen"/>
+    <br/>
+    <input type="text" name="comment" placeholder="Optionaler Kommentar" />
     {{/if}}
 </template>
 
@@ -53,8 +55,12 @@
 <template name="destination">
     <div class="destination">
         <div>
-            {{name}} {{movement}} um {{time}} Uhr zum {{dest}}
-
+            {{name}} {{movement}} um {{time}} Uhr zum
+            {{#if hasLink}}
+               <a href="http://{{getLink dest}}" target="_blank">{{dest}}</a>
+            {{else}}
+               {{dest}}
+            {{/if}}
             {{#if movementIs "fährt"}}
             und hat noch {{freeSeats}} Sitze frei
             {{/if}}
@@ -62,11 +68,17 @@
             <span class="delete" id="{{_id}}">x</span>
             {{/if}}
         </div>
+        {{#if isNotEmpty comment}}
+           <span class="comment">{{comment}}</span>
+        {{/if}}
         {{#if hasJoiners}}
         Mit dabei sind:
         <ul>
             {{#each joiners}}
             <li>{{name}}
+                {{#if isNotEmpty comment}}
+                <span class="comment">{{comment}}</span>
+                {{/if}}
                 {{#if isJoiner this}}
                 <span class="removejoiner" userId="{{userId}}" itemId="{{../../_id}}">x</span></li>
             {{/if}}
@@ -74,6 +86,7 @@
         </ul>
         {{/if}}
         {{#if hasSpaceLeftAndCanJoin}}
+        <input type="text" name="comment" placeholder="Optionaler Kommentar" />
         <input type="button" name="{{_id}}" value="Ich will mit!"/>
         {{/if}}
     </div>
@@ -89,7 +102,7 @@
         <br/><br/>
         <ul>
             {{#each foodtemples}}
-            <li><a href="{{formatlink link}}">{{name}}</a> <span class="delete" id="{{_id}}">x</span></li>
+            <li><a href="{{formatlink link}}" target="_blank">{{name}}</a> <span class="delete" id="{{_id}}">x</span></li>
             {{/each}}
         </ul>
     </div>

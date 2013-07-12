@@ -124,6 +124,9 @@ if (Meteor.isClient) {
     Template.destination.hasLink = function() {
         var dest = this.dest;
         var ft = Foodtemples.findOne({name: dest});
+        if (typeof ft.link == 'undefined') {
+           return false;
+        }
         return (ft.link.length > 0);
     };
     Template.destination.getLink = function(foodtemple) {

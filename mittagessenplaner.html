@@ -1,109 +1,155 @@
 <head>
-    <title>mittagessenplaner</title>
+  <title>mittagessenplaner v1.1</title>
 </head>
 
 <body>
-{{> main}}
+  {{> main}}
 </body>
 
 <template name="main">
-    {{#if isLoggedIn}}
-    <h1>Wo soll's denn heute hingehen, {{currentUser}}?</h1>
+  {{> notifications}}
+  {{#if isLoggedIn}}
+    <h1>Wo soll's denn heute hingehen,
+      {{currentUser}}?</h1>
+    <h2>{{today}}</h2>
     {{> list}}
     {{> enter}}
     <hr/>
     {{> locations}}
     {{else}}
     <div class="login">
-        <h1>Wie heißt du?</h1>
-        <input type="text" name="user"/>
+      <h1>Wie heißt du?</h1>
+      <input type="text" name="user"/>
+      <input type="button" id="login" value="Los geht's!"/>
     </div>
-    {{/if}}
+  {{/if}}
 </template>
 
 <template name="enter">
-    {{#if isFree}}
+  {{#if isFree}}
     Ich
     <select name="movement">
-        <option value="läuft">laufe</option>
-        <option value="fährt">fahre</option>
+      <option value="läuft">laufe</option>
+      <option value="fährt">fahre</option>
     </select>
     um
     <input type="text" name="time" value="11:30"/>
     Uhr zum
     <select name="addDest">
-        {{#each foodtemples}}
+      {{#each foodtemples}}
         <option>{{name}}</option>
-        {{/each}}
+      {{/each}}
     </select>
-    <span id="seats" class="invisible">und habe <input type="text" value="3" name="freeSeats"/> Sitze frei</span>
+    <span id="seats" class="invisible">und habe
+      <input type="text" value="3" name="freeSeats"/>
+      Sitze frei</span>
     <input type="button" value="Eintragen"/>
     <br/>
-    <input type="text" name="comment" placeholder="Optionaler Kommentar" />
-    {{/if}}
+    <input type="text" name="comment" placeholder="Zusatzinfo"/>
+  {{/if}}
 </template>
 
 <template name="list">
-    <div class="destList">
-        {{#each destinations}}
-        {{> destination}}
-        {{/each}}
-    </div>
-    <div class="clear"></div>
+  <div class="destList">
+    {{#each destinations}}
+      {{> destination}}
+    {{/each}}
+  </div>
+  <div class="clear"></div>
 </template>
 
 <template name="destination">
-    <div class="destination">
-        <div>
-            {{name}} {{movement}} um {{time}} Uhr zum
-            {{#if hasLink}}
-               <a href="http://{{getLink dest}}" target="_blank">{{dest}}</a>
-            {{else}}
-               {{dest}}
-            {{/if}}
-            {{#if movementIs "fährt"}}
-            und hat noch {{freeSeats}} Sitze frei
-            {{/if}}
-            {{#if isOwner userId}}
-            <span class="delete" id="{{_id}}">x</span>
-            {{/if}}
-        </div>
-        {{#if isNotEmpty comment}}
-           <div class="comment">{{comment}}</div>
-        {{/if}}
+  <div class="destination">
+    <div>
+      <div>
+        {{name}}
+        {{movement}}
+        um
+        {{time}}
+        Uhr
         {{#if hasJoiners}}
-        Mit dabei sind:
-        <ul>
-            {{#each joiners}}
-            <li>{{name}}
-                {{#if isNotEmpty comment}}
-                <span class="comment">{{comment}}</span>
-                {{/if}}
-                {{#if isJoiner this}}
-                <span class="removejoiner" userId="{{userId}}" itemId="{{../../_id}}">x</span></li>
-            {{/if}}
-            {{/each}}
-        </ul>
+          mit
+          {{#each $mapped joiners}}
+            {{#unless $first}}
+              {{#if $last}}
+                und
+                {{else}}
+                ,
+              {{/if}}
+            {{/unless}}
+            {{name}}
+          {{/each}}
         {{/if}}
-        {{#if hasSpaceLeftAndCanJoin}}
-        <input type="text" name="comment" placeholder="Optionaler Kommentar" />
-        <input type="button" name="{{_id}}" value="Ich will mit!"/>
+        zum
+        {{#if hasLink}}
+          <a href="http://{{getLink dest}}" target="_blank">{{dest}}</a>
+          {{else}}{{dest}}
         {{/if}}
+        {{#if movementIs "fährt"}}
+          und hat noch
+          {{freeSeats}}
+          Sitze frei
+        {{/if}}
+        {{#if isOwner userId}}
+          <span class="delete" id="{{_id}}">x</span>
+        {{/if}}
+      </div>
+      {{#if isNotEmpty comment}}
+        <div class="comment">{{comment}}</div>
+      {{/if}}
+      {{#if hasJoined}}
+        <input type="button" id="leave" name="{{_id}}" value="Doch nicht!"/>
+      {{/if}}
+      {{#if hasSpaceLeftAndCanJoin}}
+        <input type="button" id="join" name="{{_id}}" value="Ich will mit!"/>
+      {{/if}}
     </div>
+    {{> messages}}
+  </div>
+</template>
+
+<template name="messages">
+  <div class="messages">
+    {{#if hasMessages}}
+      <div class="messageContainer">
+        {{#each messages}}
+          {{> message}}
+        {{/each}}
+      </div>
+    {{/if}}
+    <input type="text" name="message" placeholder="Kommentar"/>
+    <input type="button" id="comment" name="{{_id}}" value="Abschicken"/>
+  </div>
+</template>
+
+<template name="message">
+  <div class="message">
+    <span class="date">({{formatDate date}})</span>
+    <span class="author">{{name}}:</span>
+    <span class="messageText">{{text}}</span>
+  </div>
 </template>
 
 <template name="locations">
-    <span class="addLocation">Neue Location hinzufügen</span>
+  <span class="addLocation">Neue Location hinzufügen</span>
 
-    <div class="locations invisible">
-        Name: <input type="text" name="location"/> <br/>
-        Link zur Speisekarte / Homepage: <input type="text" name="link"/> <br/>
-        <input type="button" value="Eintragen"/>
-        <br/><br/>
-        <ul>
-            {{#each foodtemples}}
-            <li><a href="{{formatlink link}}" target="_blank">{{name}}</a> <span class="delete" id="{{_id}}">x</span></li>
-            {{/each}}
-        </ul>
-    </div>
+  <div class="locations invisible">
+    Name:
+    <input type="text" name="location"/>
+    <br/>
+    Link zur Speisekarte / Homepage:
+    <input type="text" name="link"/>
+    <br/>
+    <input type="button" value="Eintragen"/>
+    <br/>
+    <br/>
+    <ul>
+      {{#each foodtemples}}
+        <li>
+          <a href="{{formatlink link}}" target="_blank">{{name}}</a>
+          <span class="delete" id="{{_id}}">x</span>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
 </template>

@@ -286,7 +286,7 @@ if (Meteor.isClient) {
   hasJoinedYet = function() {
     var hasJoined = false;
     var userId = Cookie.get("userId");
-    Destinations.find().forEach(function(row) {
+    Destinations.find({createDate: createDateForToday()}).forEach(function(row) {
       if (row.userId == userId) {
         hasJoined = true;
         return;

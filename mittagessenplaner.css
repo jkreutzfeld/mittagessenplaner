@@ -1,106 +1,113 @@
 /* CSS declarations go here */
 
-input[name=freeSeats] {
-    width: 20px;
-}
-
-input[name=time] {
-    width: 40px;
-}
-
-select[name=movement] {
-    width: 80px;
-}
-
-.invisible {
-    display: none;
-}
-
-.delete, .removejoiner {
-    cursor: pointer;
-    color: #ff0000;
-}
-
-.destination {
-    padding: 20px 0;
-    border: 1px solid rgba(15, 15, 15, 0.36);
-    margin: 10px auto;
-    width: 40%;
-
-    box-shadow: 0px 0px 3px #888;
-
-}
-
-.destination:first-child {
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-}
-
-.destination:last-child {
-
-    border-bottom-right-radius: 15px;
-    border-bottom-left-radius: 15px;
-}
-
-.destList {
-    padding: 20px;
-    text-align: center;
-}
-
-.clear {
-    clear: both;
-}
-
-.login {
-    padding-top: 200px;
-}
-
 body {
-    text-align: center;
+  background-color: rgba(179, 157, 0, 0.06);
 }
-
+input[name=freeSeats] {
+  width: 20px;
+}
+input[name=time] {
+  width: 40px;
+}
+select[name=movement] {
+  width: 80px;
+}
+.invisible {
+  display: none;
+}
+.delete, .removejoiner {
+  cursor: pointer;
+  color: #ff0000;
+}
+.destination {
+  padding: 20px 0;
+  border: 1px solid rgba(15, 15, 15, 0.36);
+  margin: 10px auto;
+  width: 40%;
+  box-shadow: 0px 0px 3px #888;
+}
+.destination:first-child {
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+.destination:last-child {
+  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+.destList {
+  padding: 10px;
+  text-align: center;
+}
+.clear {
+  clear: both;
+}
+.login {
+  padding-top: 200px;
+}
+body {
+  text-align: center;
+}
 ul {
-    list-style-type: none;
+  list-style-type: none;
 }
-
 select, input[type=text] {
-    position: relative;
-    top: 4px;
+  position: relative;
+  top: 4px;
 }
-
 .comment {
-    font-size: 0.8em;
-    color: #EC6600;
+  font-size: 0.8em;
+  color: #EC6600;
 }
-
-.comment:before {
-    content: "„";
+.comment:before, .messageText:before {
+  content: "„";
 }
-
-.comment:after {
-    content: "“";
+.comment:after, .messageText:after {
+  content: "“";
 }
-
 .addLocation {
-    text-decoration: underline;
-    cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
 }
-
 input[type=button] {
-    background-color: #00A5E1;
-    border: 1px solid #00A5E1;
-    color: #fff;
-    padding: 3px 6px 3px;
-    border-radius: 2px;
-    box-shadow: 0 1px 10px #818181;
-    position: relative;
-    top: -1px
+  background-color: #00A5E1;
+  border: 1px solid #00A5E1;
+  color: #fff;
+  padding: 3px 6px 3px;
+  border-radius: 2px;
+  box-shadow: 0 1px 10px #818181;
+  position: relative;
+  top: -1px
 }
-
 input[type=button]:active {
-    top: 0
+  top: 0
+}
+input[type=button]:hover {
+  box-shadow: 0 1px 10px #464646
+}
+input[type=button]#join, input[type=button]#leave {
+  display: inline-block;
+  margin: 10px 0px;
+}
+.messageContainer {
+  max-height: 100px;
+  overflow: auto;
+  text-align: left;
+  padding: 15px;
+  margin: 5px 0px;
+  border-top: 1px solid rgba(15, 15, 15, 0.36);
+}
+.messages input[type=text] {
+  width: 80%;
+}
+.message {
+  word-wrap: break-word;
+  margin-bottom: 5px;
+}
+.message .author {
+  color: #EC664B
+}
+.message .date {
+  font-size: 10px;
 }
 
-input[type=button]:hover {
-    box-shadow: 0 1px 10px #464646
-}
+/** Notifications **/
